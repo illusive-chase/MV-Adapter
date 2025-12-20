@@ -1,4 +1,4 @@
-from setuptools import find_packages, setup
+from setuptools import setup
 
 setup(
     name="mvadapter",
@@ -15,30 +15,11 @@ setup(
         "mvadapter.utils.mesh_utils",
     ],
     install_requires=[
-        "torch>=2.0.0",
-        "torchvision",
-        "controlnet_aux",
-        "diffusers",
-        "transformers",
-        "peft",
-        "numpy",
-        "huggingface_hub",
-        "accelerate",
-        "opencv-python",
-        "safetensors",
-        "pillow",
-        "omegaconf",
-        "trimesh",
-        "einops",
-        "gradio",
-        "timm",
-        "kornia",
-        "scikit-image",
-        "sentencepiece",
-        "spandrel",
-        "open3d",
-        "pymeshlab",
-        "cvcuda_cu12",
+        "diffusers>=0.36.0",
+        "cvcuda_cu12>=0.16.0",
+        "spandrel==0.4.1",
+        "pymeshlab>=2025.7",
+        "gltflib>=1.0.13",
     ],
     python_requires=">=3.8",
     classifiers=[

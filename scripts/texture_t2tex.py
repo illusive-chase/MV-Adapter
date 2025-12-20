@@ -1,9 +1,7 @@
 import argparse
 import os
-import sys
 
 import torch
-
 from mvadapter.pipelines.pipeline_texture import ModProcessConfig, TexturePipeline
 from mvadapter.utils import make_image_grid
 
@@ -19,6 +17,8 @@ if __name__ == "__main__":
     parser.add_argument("--save_name", type=str, default="t2tex_sample")
     # Extra
     parser.add_argument("--preprocess_mesh", action="store_true")
+    parser.add_argument("--upscaler", type=str, default="./checkpoints/RealESRGAN_x2plus.pth")
+    parser.add_argument("--inpainter", type=str, default="./checkpoints/big-lama.pt")
     args = parser.parse_args()
 
     if args.variant == "sdxl":
@@ -54,8 +54,8 @@ if __name__ == "__main__":
         dtype=torch.float16,
     )
     texture_pipe = TexturePipeline(
-        upscaler_ckpt_path="./checkpoints/RealESRGAN_x2plus.pth",
-        inpaint_ckpt_path="./checkpoints/big-lama.pt",
+        upscaler_ckpt_path=args.upscaler,
+        inpaint_ckpt_path=args.inpainter,
         device=device,
     )
     print("Pipeline ready.")
