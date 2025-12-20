@@ -3,6 +3,7 @@ import open3d as o3d
 import pymeshlab
 import torch
 import trimesh
+import xatlas
 from pymeshlab import PercentageValue as Percentage
 
 
@@ -220,6 +221,15 @@ def process_mesh(
 
 
 ### UV Un-Warp ###
+def uv_parameterize_xatlas(
+    vertices,
+    faces,
+):
+    _, indices, uvs = xatlas.parametrize(vertices, faces) # [F, 3], [N, 2]
+    assert indices.shape == faces.shape
+    uvs = uvs[indices.reshape(-1), :].reshape(indices.shape[0], 3, 2)
+    return uvs
+
 def uv_parameterize_uvatlas(
     vertices,
     faces,
@@ -284,7 +294,8 @@ def process_raw(mesh_path, save_path, preprocess=True, device="cpu"):
         v_pos, t_pos_idx, normals = vertices, faces, mesh.vertex_normals
 
     v_tex_np = (
-        uv_parameterize_uvatlas(v_pos, t_pos_idx).reshape(-1, 2).astype(np.float32)
+        uv_parameterize_xatlas(v_pos, t_pos_idx).reshape(-1, 2).astype(np.float32)
+        # uv_parameterize_uvatlas(v_pos, t_pos_idx).reshape(-1, 2).astype(np.float32)
     )
 
     v_pos = torch.from_numpy(v_pos).to(device=device, dtype=torch.float32)
