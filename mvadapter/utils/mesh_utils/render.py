@@ -1,14 +1,11 @@
-import math
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from datetime import datetime
 from typing import List, Optional, Union
 
 import numpy as np
 import nvdiffrast.torch as dr
 import torch
 import torch.nn.functional as F
-import trimesh
 from PIL import Image
 from torch import BoolTensor, FloatTensor
 
@@ -28,7 +25,7 @@ class RenderOutput:
 
 
 class NVDiffRastContextWrapper:
-    def __init__(self, device: str, context_type: str = "gl"):
+    def __init__(self, device: str, context_type: str = "cuda"):
         if context_type == "gl":
             self.ctx = dr.RasterizeGLContext(device=device)
         elif context_type == "cuda":

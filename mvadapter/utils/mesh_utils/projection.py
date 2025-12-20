@@ -1,23 +1,17 @@
-import glob
 from dataclasses import dataclass
-from typing import List, Optional, Union
+from typing import Optional
 
-import numpy as np
 import torch
-from einops import rearrange
-from PIL import Image
 
 from .blend import PoissonBlendingSolver
-from .camera import Camera, get_camera, get_orthogonal_camera
-from .mesh import TexturedMesh, load_mesh, replace_mesh_texture_and_save
-from .render import NVDiffRastContextWrapper, SimpleNormalization, render
+from .camera import Camera, get_camera
+from .mesh import TexturedMesh
+from .render import NVDiffRastContextWrapper, render
 from .seg import SegmentationModel
 from .utils import (
     IMAGE_TYPE,
     LIST_TYPE,
     image_to_tensor,
-    make_image_grid,
-    tensor_to_image,
 )
 from .uv import (
     ExponentialBlend,
@@ -44,7 +38,7 @@ class CameraProjection:
         pb_backend: str,
         bg_remover: Optional[SegmentationModel],
         device: str,
-        context_type: str = "gl",
+        context_type: str = "cuda",
     ) -> None:
         self.pb_solver = PoissonBlendingSolver(pb_backend, device)
         self.ctx = NVDiffRastContextWrapper(device, context_type)
@@ -87,12 +81,11 @@ class CameraProjection:
 
         if masks is not None:
             masks_pt = image_to_tensor(masks, device=self.device)
+        elif remove_bg:
+            assert self.bg_remover is not None
+            masks_pt = self.bg_remover(images_pt)
         else:
-            if remove_bg:
-                assert self.bg_remover is not None
-                masks_pt = self.bg_remover(images_pt)
-            else:
-                masks_pt = None
+            masks_pt = None
 
         if masks_pt is not None and masks_pt.ndim == 4:
             masks_pt = masks_pt.mean(-1)
