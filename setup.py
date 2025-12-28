@@ -18,8 +18,10 @@ setup(
         "diffusers>=0.36.0",
         "cvcuda_cu12>=0.16.0",
         "spandrel==0.4.1",
-        "pymeshlab>=2025.7",
+        "pymeshlab>=2023",
         "gltflib>=1.0.13",
+        "omegaconf>=2.3.0",
+        "xatlas>=0.0.11",
     ],
     python_requires=">=3.8",
     classifiers=[
